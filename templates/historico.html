@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="min-h-screen bg-ios-bg dark:bg-ios-dark-bg py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-300">
+    <div class="max-w-4xl mx-auto space-y-8">
+        
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl font-bold text-ios-text dark:text-white">Meus Pedidos</h1>
+                <p class="text-ios-subtext dark:text-ios-dark-subtext mt-1">Acompanhe o histórico das suas compras.</p>
+            </div>
+            <a href="{% url 'index' %}" class="text-sm text-coffee-600 dark:text-coffee-400 font-medium hover:underline flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                Voltar para Home
+            </a>
+        </div>
+
+        <div class="bg-white dark:bg-ios-dark-surface rounded-[2rem] shadow-ios dark:shadow-ios-dark overflow-hidden">
+            {% if pedidos %}
+                <div class="hidden md:grid grid-cols-4 gap-4 p-6 border-b border-gray-100 dark:border-gray-700 text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <div class="col-span-2">Produto</div>
+                    <div class="text-center">Data</div>
+                    <div class="text-right">Total</div>
+                </div>
+
+                <ul class="divide-y divide-gray-100 dark:divide-gray-700">
+                    {% for pedido in pedidos %}
+                    <li class="p-6 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors group">
+                        <div class="flex items-center justify-between">
+                            
+                            <div class="flex items-center space-x-4 flex-1">
+                                <div class="h-16 w-16 rounded-xl bg-gray-100 dark:bg-gray-700 overflow-hidden flex-shrink-0 border border-gray-200 dark:border-gray-600 relative">
+                                    {% if pedido.produto.foto %}
+                                        <img src="{{ pedido.produto.foto.url }}" alt="" class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                    {% else %}
+                                        <div class="h-full w-full flex items-center justify-center text-gray-400">☕</div>
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-lg text-gray-900 dark:text-white">{{ pedido.produto.nome }}</h4>
+                                    <div class="flex items-center gap-2 mt-1">
+                                        <span class="text-xs font-medium px-2.5 py-0.5 rounded-full bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
+                                            Concluído
+                                        </span>
+                                        <span class="text-sm text-gray-500 dark:text-gray-400">Qtd: {{ pedido.quantidade }}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="hidden md:block text-sm text-gray-500 dark:text-gray-400">
+                                {{ pedido.data|date:"d M, Y" }}
+                            </div>
+
+                            <div class="text-right pl-4">
+                                <span class="block text-lg font-bold text-coffee-700 dark:text-coffee-400">R$ {{ pedido.total }}</span>
+                                <span class="text-xs text-gray-400">#{{ pedido.id }}</span>
+                            </div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <div class="flex flex-col items-center justify-center py-24 px-4 text-center">
+                    <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-full mb-4">
+                        <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                    </div>
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-white">Nenhum pedido ainda</h3>
+                    <p class="text-gray-500 dark:text-gray-400 max-w-sm mt-1">Parece que você ainda não experimentou nossos cafés. Que tal começar agora?</p>
+                    <a href="{% url 'index' %}#produtos" class="mt-6 inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-xl text-white bg-coffee-900 hover:bg-coffee-800 dark:bg-coffee-700 dark:hover:bg-coffee-600 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                        Ver Produtos
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

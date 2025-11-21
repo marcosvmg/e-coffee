@@ -7,7 +7,7 @@
         <div class="flex items-center justify-between">
             <div>
                 <h1 class="text-3xl font-bold text-ios-text dark:text-white">Meu Perfil</h1>
-                <p class="text-ios-subtext dark:text-ios-dark-subtext mt-1">Gerencie suas informações e preferências.</p>
+                <p class="text-ios-subtext dark:text-ios-dark-subtext mt-1">Gerencie suas informações pessoais.</p>
             </div>
             <form action="{% url 'logout' %}" method="post">
                 {% csrf_token %}
@@ -21,7 +21,6 @@
             {% csrf_token %}
             
             <div class="space-y-6">
-                
                 <div class="bg-white dark:bg-ios-dark-surface rounded-[2rem] p-6 shadow-ios dark:shadow-ios-dark text-center relative overflow-hidden">
                     
                     <div class="relative inline-block group cursor-pointer">
@@ -47,21 +46,6 @@
                     
                     <h2 class="mt-4 text-xl font-bold text-ios-text dark:text-white">{{ user.first_name }} {{ user.last_name }}</h2>
                     <p class="text-sm text-ios-subtext dark:text-gray-400">@{{ user.username }}</p>
-                </div>
-
-                <div class="bg-white dark:bg-ios-dark-surface rounded-[2rem] p-6 shadow-ios dark:shadow-ios-dark">
-                    <h3 class="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-4">Aparência</h3>
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <div class="p-2 bg-gray-100 dark:bg-gray-700 rounded-full text-gray-600 dark:text-gray-300">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
-                            </div>
-                            <span class="text-sm font-medium text-gray-700 dark:text-gray-200">Modo Escuro</span>
-                        </div>
-                        <button type="button" id="theme-toggle" class="relative inline-flex h-7 w-12 items-center rounded-full bg-gray-200 transition-colors focus:outline-none">
-                            <span id="theme-toggle-circle" class="inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out translate-x-1"></span>
-                        </button>
-                    </div>
                 </div>
             </div>
 
@@ -103,38 +87,6 @@
                         </button>
                     </div>
                 </div>
-
-                <div class="bg-white dark:bg-ios-dark-surface rounded-[2rem] shadow-ios dark:shadow-ios-dark overflow-hidden">
-                    <div class="p-6 border-b border-gray-100 dark:border-gray-700">
-                        <h3 class="text-lg font-bold text-ios-text dark:text-white">Histórico de Pedidos</h3>
-                    </div>
-                    {% if pedidos %}
-                        <ul class="divide-y divide-gray-100 dark:divide-gray-700">
-                            {% for pedido in pedidos %}
-                            <li class="p-6 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center space-x-4">
-                                        <div class="h-14 w-14 rounded-xl bg-gray-100 dark:bg-gray-700 overflow-hidden flex-shrink-0 border border-gray-200 dark:border-gray-600">
-                                            {% if pedido.produto.foto %}
-                                                <img src="{{ pedido.produto.foto.url }}" alt="" class="h-full w-full object-cover">
-                                            {% else %}
-                                                <div class="h-full w-full flex items-center justify-center text-gray-400">☕</div>
-                                            {% endif %}
-                                        </div>
-                                        <div>
-                                            <h4 class="font-semibold text-gray-900 dark:text-white">{{ pedido.produto.nome }}</h4>
-                                            <p class="text-sm text-gray-500 dark:text-gray-400">{{ pedido.data|date:"d M, Y" }}</p>
-                                        </div>
-                                    </div>
-                                    <span class="font-bold text-coffee-700 dark:text-coffee-400">R$ {{ pedido.total }}</span>
-                                </div>
-                            </li>
-                            {% endfor %}
-                        </ul>
-                    {% else %}
-                        <div class="p-8 text-center text-gray-500 dark:text-gray-400">Você ainda não fez nenhum pedido.</div>
-                    {% endif %}
-                </div>
             </div>
         </form>
     </div>
@@ -161,41 +113,5 @@
             reader.readAsDataURL(input.files[0]);
         }
     }
-
-    const themeToggle = document.getElementById('theme-toggle');
-    const themeToggleCircle = document.getElementById('theme-toggle-circle');
-    const htmlElement = document.documentElement;
-
-    function updateToggleUI(isDark) {
-        if (isDark) {
-            themeToggle.classList.remove('bg-gray-200');
-            themeToggle.classList.add('bg-green-500');
-            themeToggleCircle.classList.remove('translate-x-1');
-            themeToggleCircle.classList.add('translate-x-6');
-        } else {
-            themeToggle.classList.add('bg-gray-200');
-            themeToggle.classList.remove('bg-green-500');
-            themeToggleCircle.classList.add('translate-x-1');
-            themeToggleCircle.classList.remove('translate-x-6');
-        }
-    }
-
-    if (htmlElement.classList.contains('dark')) {
-        updateToggleUI(true);
-    } else {
-        updateToggleUI(false);
-    }
-
-    themeToggle.addEventListener('click', () => {
-        if (htmlElement.classList.contains('dark')) {
-            htmlElement.classList.remove('dark');
-            localStorage.setItem('theme', 'light');
-            updateToggleUI(false);
-        } else {
-            htmlElement.classList.add('dark');
-            localStorage.setItem('theme', 'dark');
-            updateToggleUI(true);
-        }
-    });
 </script>
 {% endblock %}

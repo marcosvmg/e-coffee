@@ -8,7 +8,6 @@ from .forms import UserUpdateForm, PerfilUpdateForm
 
 def index(request):
     pagina_dados = Pagina.objects.first()
-    
     produtos = Produto.objects.all()
 
     if request.method == 'POST':
@@ -67,13 +66,12 @@ def comprar_produto(request, produto_id):
             produto.save()
             
             messages.success(request, 'Compra realizada com sucesso!')
-            return redirect('perfil')
+            return redirect('historico')
 
     return render(request, 'compra.html', {'produto': produto})
 
 @login_required
 def perfil_usuario(request):
-    # Garante que o perfil existe
     PerfilUsuario.objects.get_or_create(user=request.user)
 
     if request.method == 'POST':
@@ -88,12 +86,14 @@ def perfil_usuario(request):
     else:
         u_form = UserUpdateForm(instance=request.user)
         p_form = PerfilUpdateForm(instance=request.user.perfil)
-
-    pedidos = Pedido.objects.filter(usuario=request.user).order_by('-data')
     
     context = {
         'u_form': u_form,
         'p_form': p_form,
-        'pedidos': pedidos
     }
     return render(request, 'perfil.html', context)
+
+@login_required
+def historico_pedidos(request):
+    pedidos = Pedido.objects.filter(usuario=request.user).order_by('-data')
+    return render(request, 'historico.html', {'pedidos': pedidos})
