@@ -1,0 +1,228 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    /* Estilo da barra de força da senha */
+    #password-strength-container {
+        margin-top: 0.75rem;
+        transition: all 0.3s ease;
+        opacity: 0;
+        height: 0;
+        overflow: hidden;
+    }
+    #password-strength-container.visible {
+        opacity: 1;
+        height: auto;
+    }
+    .strength-bar-bg {
+        background-color: #e5e7eb;
+        height: 4px;
+        border-radius: 2px;
+        width: 100%;
+        overflow: hidden;
+        position: relative;
+    }
+    .strength-bar-fill {
+        height: 100%;
+        width: 0%;
+        border-radius: 2px;
+        transition: width 0.3s ease, background-color 0.3s ease;
+    }
+    
+    /* Animação para elementos decorativos de fundo */
+    @keyframes blob {
+        0% { transform: translate(0px, 0px) scale(1); }
+        33% { transform: translate(30px, -50px) scale(1.1); }
+        66% { transform: translate(-20px, 30px) scale(0.9); }
+        100% { transform: translate(0px, 0px) scale(1); }
+    }
+    .animate-blob { animation: blob 7s infinite cubic-bezier(0.6, -0.28, 0.735, 0.045); }
+    .animation-delay-2000 { animation-delay: 2s; }
+
+    /* Customização dos Inputs gerados pelo Django */
+    input {
+        width: 100%;
+        padding: 1rem 1.25rem;
+        border-radius: 1rem;
+        border: 1px solid #e5e7eb;
+        background-color: rgba(255, 255, 255, 0.5);
+        transition: all 0.3s ease;
+        outline: none;
+        font-size: 1rem;
+        margin-top: 0.5rem;
+    }
+    input:focus {
+        border-color: #8d6e63;
+        box-shadow: 0 4px 12px rgba(141, 110, 99, 0.1);
+        background-color: white;
+    }
+</style>
+
+<div class="min-h-screen flex items-center justify-center bg-ios-bg py-12 px-4 sm:px-6 lg:px-8 relative">
+    
+    <div class="absolute top-20 left-20 w-72 h-72 bg-coffee-200 rounded-full mix-blend-multiply filter blur-[64px] opacity-30 animate-blob"></div>
+    <div class="absolute bottom-20 right-20 w-72 h-72 bg-gray-300 rounded-full mix-blend-multiply filter blur-[64px] opacity-30 animate-blob animation-delay-2000"></div>
+
+    <div class="max-w-md w-full space-y-8 relative z-10">
+        <div class="text-center">
+            <h2 class="text-3xl font-semibold text-ios-text tracking-tight">
+                Criar nova conta
+            </h2>
+            <p class="mt-2 text-sm text-ios-subtext">
+                Configure sua senha com segurança.
+            </p>
+        </div>
+
+        <div class="bg-white/80 backdrop-blur-xl rounded-[2rem] shadow-ios p-8 sm:p-10 border border-white/20">
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="space-y-6">
+                    {% for field in form %}
+                        <div>
+                            <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-600 ml-2">
+                                {{ field.label }}
+                            </label>
+                            
+                            {{ field }}
+
+                            {% if field.errors %}
+                                <div class="mt-1 ml-2 text-sm text-red-500">
+                                    {{ field.errors.0 }}
+                                </div>
+                            {% endif %}
+                            
+                            </div>
+                    {% endfor %}
+                </div>
+
+                <div class="mt-8">
+                    <button type="submit" class="w-full flex justify-center py-4 px-4 border border-transparent text-sm font-medium rounded-2xl text-white bg-coffee-900 hover:bg-coffee-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-coffee-500 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 active:scale-95">
+                        Cadastrar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const passwordInput = document.getElementById('id_password1');
+        
+        if (passwordInput) {
+            const strengthContainer = document.createElement('div');
+            strengthContainer.id = 'password-strength-container';
+            strengthContainer.innerHTML = `
+                <div class="flex justify-between items-center mb-1 mt-3">
+                    <span class="text-xs font-medium text-gray-500">Força da senha</span>
+                    <span id="strength-text" class="text-xs font-bold text-gray-400">Digite...</span>
+                </div>
+                <div class="strength-bar-bg">
+                    <div id="strength-bar" class="strength-bar-fill"></div>
+                </div>
+                <ul class="mt-3 space-y-1 text-xs text-gray-500">
+                    <li id="req-length" class="flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 rounded-full bg-gray-300 transition-colors"></span>
+                        Mínimo 8 caracteres
+                    </li>
+                    <li id="req-complexity" class="flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 rounded-full bg-gray-300 transition-colors"></span>
+                        Deve incluir letras maiúsculas/minúsculas e números
+                    </li>
+                    <li id="req-numeric" class="flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 rounded-full bg-gray-300 transition-colors"></span>
+                        Não pode ser inteiramente numérica
+                    </li>
+                </ul>
+            `;
+
+            passwordInput.parentNode.insertBefore(strengthContainer, passwordInput.nextSibling);
+
+            const strengthBar = document.getElementById('strength-bar');
+            const strengthText = document.getElementById('strength-text');
+            const container = document.getElementById('password-strength-container');
+            
+            const reqLength = document.getElementById('req-length').querySelector('span');
+            const reqComplexity = document.getElementById('req-complexity').querySelector('span');
+            const reqNumeric = document.getElementById('req-numeric').querySelector('span');
+
+            const updateChecklist = (element, condition) => {
+                element.className = condition 
+                    ? "w-1.5 h-1.5 rounded-full bg-green-500 transition-colors" 
+                    : "w-1.5 h-1.5 rounded-full bg-gray-300 transition-colors";
+            };
+
+            passwordInput.addEventListener('input', function() {
+                const val = passwordInput.value;
+                
+                if (val.length > 0) {
+                    container.classList.add('visible');
+                } else {
+                    container.classList.remove('visible');
+                }
+
+                let score = 0;
+
+                const lengthCheck = val.length >= 8;
+                const isOnlyNumeric = /^\d+$/.test(val) && val.length > 0;
+                const hasLower = /[a-z]/.test(val);
+                const hasUpper = /[A-Z]/.test(val);
+                const hasNumber = /[0-9]/.test(val);
+                const hasSpecial = /[^A-Za-z0-9]/.test(val);
+                const complexityCheck = (hasLower || hasUpper) && hasNumber;
+                
+                updateChecklist(reqLength, lengthCheck);
+                updateChecklist(reqComplexity, complexityCheck);
+                updateChecklist(reqNumeric, !isOnlyNumeric);
+
+                if (lengthCheck) score++;
+                if (hasLower && hasUpper) score++;
+                if (hasNumber) score++;
+                if (hasSpecial) score++;
+                if (isOnlyNumeric) score = 0;
+
+                let width = '0%';
+                let color = '#e5e7eb';
+                let text = '';
+                let textColor = 'text-gray-400';
+
+                if (val.length === 0) {
+                    text = 'Digite...';
+                    width = '0%';
+                } else if (isOnlyNumeric) {
+                     width = '100%';
+                     color = '#ef4444';
+                     text = 'Somente Números!';
+                     textColor = 'text-red-500';
+                } else if (score === 1) {
+                    width = '25%';
+                    color = '#f87171';
+                    text = 'Fraca';
+                    textColor = 'text-red-500';
+                } else if (score === 2) {
+                    width = '50%';
+                    color = '#fbbf24';
+                    text = 'Razoável';
+                    textColor = 'text-yellow-600';
+                } else if (score === 3) {
+                    width = '75%';
+                    color = '#34d399';
+                    text = 'Forte';
+                    textColor = 'text-green-600';
+                } else if (score >= 4) {
+                    width = '100%';
+                    color = '#059669';
+                    text = 'Excelente';
+                    textColor = 'text-green-700';
+                }
+
+                strengthBar.style.width = width;
+                strengthBar.style.backgroundColor = color;
+                strengthText.innerText = text;
+                strengthText.className = `text-xs font-bold ${textColor}`;
+            });
+        }
+    });
+</script>
+{% endblock %}

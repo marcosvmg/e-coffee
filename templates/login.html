@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center bg-ios-bg py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-coffee-200 rounded-full mix-blend-multiply filter blur-[80px] opacity-20 animate-pulse"></div>
+
+    <div class="max-w-md w-full space-y-8 relative z-10">
+        <div class="text-center">
+            <h2 class="mt-6 text-3xl font-semibold text-ios-text tracking-tight">
+                Bem-vindo de volta
+            </h2>
+            <p class="mt-2 text-sm text-ios-subtext">
+                Acesse sua conta para gerenciar pedidos.
+            </p>
+        </div>
+        
+        <div class="bg-white/80 backdrop-blur-xl rounded-[2rem] shadow-ios p-8 sm:p-10">
+            <form class="space-y-6" action="{% url 'login' %}" method="POST">
+                {% csrf_token %}
+                
+                <div class="space-y-5">
+                    <div>
+                        <label for="id_username" class="sr-only">Usuário</label>
+                        <input id="id_username" name="username" type="text" required class="appearance-none relative block w-full px-5 py-4 border border-gray-200 placeholder-gray-400 text-ios-text rounded-2xl focus:outline-none focus:ring-2 focus:ring-coffee-500 focus:border-transparent sm:text-sm transition-all bg-white/50 hover:bg-white" placeholder="Nome de usuário">
+                    </div>
+                    <div>
+                        <label for="id_password" class="sr-only">Senha</label>
+                        <input id="id_password" name="password" type="password" required class="appearance-none relative block w-full px-5 py-4 border border-gray-200 placeholder-gray-400 text-ios-text rounded-2xl focus:outline-none focus:ring-2 focus:ring-coffee-500 focus:border-transparent sm:text-sm transition-all bg-white/50 hover:bg-white" placeholder="Senha">
+                    </div>
+                </div>
+
+                <div>
+                    <button type="submit" class="group relative w-full flex justify-center py-4 px-4 border border-transparent text-sm font-medium rounded-2xl text-white bg-coffee-900 hover:bg-coffee-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-coffee-500 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                        Entrar
+                    </button>
+                </div>
+                
+                <div class="text-center mt-4">
+                    <a href="{% url 'cadastro' %}" class="font-medium text-coffee-600 hover:text-coffee-500 text-sm">
+                        Não tem conta? Cadastre-se
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
