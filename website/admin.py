@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Pagina, Produto, Contato, Pedido
+from .models import Pagina, Produto, Contato, Pedido, PerfilUsuario
 
 @admin.register(Pagina)
 class PaginaAdmin(admin.ModelAdmin):
@@ -19,3 +19,7 @@ class ContatoAdmin(admin.ModelAdmin):
 class PedidoAdmin(admin.ModelAdmin):
     list_display = ('usuario', 'produto', 'quantidade', 'total', 'data')
     list_filter = ('data',)
+
+@admin.register(PerfilUsuario)
+class PerfilUsuarioAdmin(admin.ModelAdmin):
+    list_display = ('user', 'telefone', 'endereco')

@@ -61,8 +61,6 @@ class PerfilUsuario(models.Model):
 
     def __str__(self):
         return f"Perfil de {self.user.username}"
-
-# Sinais para criar/atualizar o perfil automaticamente quando um User é criado
 @receiver(post_save, sender=User)
 def criar_ou_atualizar_perfil_usuario(sender, instance, created, **kwargs):
     if created:

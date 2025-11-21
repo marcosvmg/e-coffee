@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="pt-br" class="scroll-smooth">
 <head>
@@ -5,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>e-coffee | Premium Experience</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -20,9 +22,9 @@
                             text: '#1D1D1F',      
                             subtext: '#86868B',   
                             
-                            'dark-bg': '#1a1614',      
-                            'dark-surface': '#261f1d', 
-                            'dark-text': '#e7e5e4',    
+                            'dark-bg': '#1a1614',
+                            'dark-surface': '#261f1d',
+                            'dark-text': '#e7e5e4',
                             'dark-subtext': '#a8a29e', 
                             'dark-border': '#382e2b',  
                         },
@@ -43,11 +45,27 @@
                         'ios': '0 4px 24px rgba(0, 0, 0, 0.04)',
                         'ios-hover': '0 8px 32px rgba(0, 0, 0, 0.08)',
                         'ios-dark': '0 10px 30px rgba(0, 0, 0, 0.5)', 
+                    },
+                    keyframes: {
+                        'fade-in-down': {
+                            '0%': {
+                                opacity: '0',
+                                transform: 'translateY(-10px)'
+                            },
+                            '100%': {
+                                opacity: '1',
+                                transform: 'translateY(0)'
+                            },
+                        },
+                    },
+                    animation: {
+                        'fade-in-down': 'fade-in-down 0.5s ease-out',
                     }
                 }
             }
         }
     </script>
+
     <script>
         if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark')
@@ -55,6 +73,7 @@
             document.documentElement.classList.remove('dark')
         }
     </script>
+
     <style>
         html { scroll-behavior: smooth; }
         body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
@@ -89,9 +108,8 @@
             <div class="flex justify-between items-center h-16 relative">
                 
                 <div>
-                    <a href="{% url 'index' %}" class="text-xl font-semibold tracking-tight flex items-center gap-2 hover:opacity-70 transition-opacity text-ios-text dark:text-ios-dark-text">
-                        <svg class="w-5 h-5 text-coffee-700 dark:text-coffee-400" fill="currentColor" viewBox="0 0 24 24"><path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/><path opacity="0.5" d="M6 2v2m4-2v2m4-2v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-                        e-coffee
+                    <a href="{% url 'index' %}" class="flex items-center gap-2 hover:opacity-70 transition-opacity">
+                        <img src="{% static 'img/logo.png' %}" alt="Logo e-coffee" class="h-8 w-auto">
                     </a>
                 </div>
 
@@ -111,9 +129,14 @@
                         <div class="relative">
                             <button id="profile-menu-button" class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-100 dark:bg-gray-700 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors focus:outline-none" aria-expanded="false" aria-haspopup="true">
                                 <span class="hidden sm:inline">{{ user.username }}</span>
-                                <span class="h-6 w-6 rounded-full bg-coffee-200 dark:bg-coffee-900 flex items-center justify-center text-xs font-bold text-coffee-800 dark:text-white">
-                                    {{ user.username|make_list|first|upper }}
-                                </span>
+                                
+                                {% if user.perfil.foto %}
+                                    <img class="h-6 w-6 rounded-full object-cover border border-gray-200 dark:border-gray-600" src="{{ user.perfil.foto.url }}" alt="{{ user.username }}">
+                                {% else %}
+                                    <span class="h-6 w-6 rounded-full bg-coffee-200 dark:bg-coffee-900 flex items-center justify-center text-xs font-bold text-coffee-800 dark:text-white border border-coffee-300 dark:border-coffee-700">
+                                        {{ user.username|make_list|first|upper }}
+                                    </span>
+                                {% endif %}
                             </button>
 
                             <div id="profile-dropdown" class="absolute right-0 mt-2 w-64 origin-top-right rounded-xl bg-white dark:bg-ios-dark-surface shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none hidden transition-all duration-200 border border-gray-100 dark:border-ios-dark-border z-50" role="menu">
@@ -244,7 +267,6 @@
             panel.classList.remove('modal-enter');
             panel.classList.add('modal-enter-active');
         }, 10);
-        
         const dropdown = document.getElementById('profile-dropdown');
         if (!dropdown.classList.contains('hidden')) {
             dropdown.classList.add('hidden');
@@ -254,10 +276,8 @@
     function closeModal(modalId) {
         const modal = document.getElementById(modalId);
         const panel = modal.querySelector('.relative');
-        
         panel.classList.remove('modal-enter-active');
         panel.classList.add('modal-exit-active');
-        
         setTimeout(() => {
             modal.classList.add('hidden');
             panel.classList.remove('modal-exit-active');
@@ -276,7 +296,6 @@
 
         if (button) {
             button.addEventListener('click', toggleDropdown);
-
             document.addEventListener('click', function(event) {
                 if (!dropdown.contains(event.target) && !button.contains(event.target)) {
                     if (!dropdown.classList.contains('hidden')) {

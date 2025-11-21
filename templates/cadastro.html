@@ -2,7 +2,6 @@
 
 {% block content %}
 <style>
-    /* Estilo da barra de força da senha */
     #password-strength-container {
         margin-top: 0.75rem;
         transition: all 0.3s ease;
@@ -29,7 +28,6 @@
         transition: width 0.3s ease, background-color 0.3s ease;
     }
     
-    /* Animação para elementos decorativos de fundo */
     @keyframes blob {
         0% { transform: translate(0px, 0px) scale(1); }
         33% { transform: translate(30px, -50px) scale(1.1); }
@@ -39,7 +37,6 @@
     .animate-blob { animation: blob 7s infinite cubic-bezier(0.6, -0.28, 0.735, 0.045); }
     .animation-delay-2000 { animation-delay: 2s; }
 
-    /* Customização dos Inputs gerados pelo Django */
     input {
         width: 100%;
         padding: 1rem 1.25rem;
