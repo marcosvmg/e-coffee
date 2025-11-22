@@ -1,6 +1,9 @@
 from pathlib import Path
 import os
+
 import dj_database_url
+
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -124,3 +127,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = 'index'
 LOGOUT_REDIRECT_URL = 'index'
 LOGIN_URL = 'login'
+
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-chave-de-desenvolvimento-temporaria')
