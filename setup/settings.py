@@ -145,7 +145,7 @@ STORAGES = {
         "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
     },
     # 'staticfiles' é para CSS/JS do sistema -> Continua com WhiteNoise
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-    },
+"staticfiles": {
+    "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
+},
 }
