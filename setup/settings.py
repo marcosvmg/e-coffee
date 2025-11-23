@@ -4,11 +4,10 @@ import os
 import dj_database_url
 
 
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SEGURANÇA: Lê a SECRET_KEY do ambiente ou usa uma padrão para desenvolvimento
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-change-me-please-for-production-use')
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-chave-de-desenvolvimento-temporaria')
 
 # SEGURANÇA: DEBUG deve ser False em produção
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
@@ -40,12 +39,13 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # Essencial para estáticos no Render
+    # WhiteNoise DEVE ser o primeiro após SecurityMiddleware (e estar APENAS AQUI)
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
+    #'whitenoise.middleware.WhiteNoiseMiddleware', # REMOVIDA AQUI
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
