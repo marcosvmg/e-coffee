@@ -115,7 +115,7 @@ USE_TZ = True
 
 # ARQUIVOS ESTÁTICOS (CSS, JavaScript, Imagens)
 STATIC_URL = 'static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_ROOT = BASE_DIR / 'static_production'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
 # Armazenamento de estáticos otimizado para o WhiteNoise
@@ -140,12 +140,10 @@ CLOUDINARY_STORAGE = {
 
 # Armazenamento de Arquivos
 STORAGES = {
-    # 'default' é para arquivos de mídia (uploads de imagens) -> Vai para o Cloudinary
     "default": {
         "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
     },
-    # 'staticfiles' é para CSS/JS do sistema -> Continua com WhiteNoise
-"staticfiles": {
-    "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
-},
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
+    },
 }
